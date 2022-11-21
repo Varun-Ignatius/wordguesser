@@ -11,8 +11,8 @@ class WordGuesserGame
   attr_accessor :check_win_or_lose
   def initialize(word)
     @word = word
-    @guesses = ""
-    @wrong_guesses = ""
+    @guesses = []
+    @wrong_guesses = []
     @word_with_guesses = "-" *  word.length
     @failedCounter = 0
     @check_win_or_lose = :play
@@ -33,9 +33,9 @@ class WordGuesserGame
 
   def guess alphabet
     if alphabet == '' || alphabet == '%' || alphabet == nil
-      raise ArgumentError 
+      return false
     end
-    if alphabet.match?(/[^a-z]/) || alphabet == @guesses ||  alphabet == @wrong_guesses
+    if alphabet.match?(/[^a-z]/) || @guesses.include?(alphabet) ||  @wrong_guesses.include?(alphabet)
       return false
     end
     if @word.include?(alphabet)
@@ -43,12 +43,12 @@ class WordGuesserGame
       a.each do |i|
         @word_with_guesses[i] = alphabet
       end  
-      @guesses = alphabet
+      @guesses.append(alphabet)
       if @word_with_guesses.index('-') == nil
         @check_win_or_lose = :win
       end
     else
-      @wrong_guesses = alphabet
+      @wrong_guesses.append(alphabet)
       @failedCounter = @failedCounter+1
       if @failedCounter == 7
         @check_win_or_lose = :lose
